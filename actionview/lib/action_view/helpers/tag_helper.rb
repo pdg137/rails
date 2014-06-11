@@ -172,10 +172,34 @@ module ActionView
           %(#{key}="#{key}")
         end
 
+        def escape_tag_string_value(value, escape)
+          if escape
+            ERB::Util.unwrapped_html_escape(value)
+          else
+            value
+          end
+        end
+
+        def escape_tag_array_value(value, escape)
+          if escape
+            safe_join(value, " ")
+          else
+            value.join(" ")
+          end
+        end
+
+        def escape_tag_value(value, escape)
+          case value
+          when Array
+            escape_tag_array_value(value, escape)
+          else
+            escape_tag_string_value(value, escape)
+          end
+        end
+
         def tag_option(key, value, escape)
-          value = value.join(" ") if value.is_a?(Array)
-          value = ERB::Util.unwrapped_html_escape(value) if escape
-          %(#{key}="#{value}")
+          escaped_value = escape_tag_value(value, escape)
+          %(#{key}="#{escaped_value}")
         end
     end
   end
