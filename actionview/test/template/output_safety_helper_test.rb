@@ -25,4 +25,8 @@ class OutputSafetyHelperTest < ActionView::TestCase
     assert_equal "<p>foo</p><br /><p>bar</p>", joined
   end
 
+  test "safe_join should work recursively similarly to Array.join" do
+    joined = safe_join(["a",["b","c"]], ":")
+    assert_equal "a:b:c", joined
+  end
 end
